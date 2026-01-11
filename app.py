@@ -193,39 +193,40 @@ if uploaded_file:
             # Draw contour
             cv2.drawContours(img, [cnt], -1, (0, 255, 0), 5)
 
-    # Bounding box
-    x, y, w, h = cv2.boundingRect(cnt)
+            # ----------------------------
+            # FIXED LABEL CODE (INSIDE LOOP)
+            # ----------------------------
+            x, y, w, h = cv2.boundingRect(cnt)
 
-    # Auto scale font
-    font = cv2.FONT_HERSHEY_SIMPLEX
-    font_scale = max(0.4, min(w, h) / 150)
-    thickness = max(1, int(font_scale * 2))
+            font = cv2.FONT_HERSHEY_SIMPLEX
+            font_scale = max(0.4, min(w, h) / 150)
+            thickness = max(1, int(font_scale * 2))
 
-    (label_w, label_h), _ = cv2.getTextSize(shape, font, font_scale, thickness)
+            (label_w, label_h), _ = cv2.getTextSize(shape, font, font_scale, thickness)
 
-    # Place text INSIDE the shape box
-    text_x = x + (w - label_w) // 2
-    text_y = y + (h + label_h) // 2
+            text_x = x + (w - label_w) // 2
+            text_y = y + (h + label_h) // 2
 
-    # Draw background
-    cv2.rectangle(
-        img,
-        (text_x - 4, text_y - label_h - 4),
-        (text_x + label_w + 4, text_y + 4),
-        (0, 0, 0),
-        -1
-    )
+            # Background box
+            cv2.rectangle(
+                img,
+                (text_x - 4, text_y - label_h - 4),
+                (text_x + label_w + 4, text_y + 4),
+                (0, 0, 0),
+                -1
+            )
 
-    # Draw text
-    cv2.putText(
-        img,
-        shape,
-        (text_x, text_y),
-        font,
-        font_scale,
-        (0, 255, 255),
-        thickness
-    )
+            # Text
+            cv2.putText(
+                img,
+                shape,
+                (text_x, text_y),
+                font,
+                font_scale,
+                (0, 255, 255),
+                thickness
+            )
+
 
 
     # -------------------------------
