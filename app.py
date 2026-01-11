@@ -196,30 +196,31 @@ if uploaded_file:
     # Bounding box
     x, y, w, h = cv2.boundingRect(cnt)
 
-    # Auto scale font based on object size
+    # Auto scale font
     font = cv2.FONT_HERSHEY_SIMPLEX
-    font_scale = max(0.4, min(w, h) / 150)   # dynamic scaling
+    font_scale = max(0.4, min(w, h) / 150)
     thickness = max(1, int(font_scale * 2))
 
     (label_w, label_h), _ = cv2.getTextSize(shape, font, font_scale, thickness)
 
-    # Safe placement
-    text_y = y - 10 if y - 10 > label_h else y + label_h + 10
+    # Place text INSIDE the shape box
+    text_x = x + (w - label_w) // 2
+    text_y = y + (h + label_h) // 2
 
-    # Background box
+    # Draw background
     cv2.rectangle(
         img,
-        (x, text_y - label_h - 6),
-        (x + label_w + 6, text_y),
+        (text_x - 4, text_y - label_h - 4),
+        (text_x + label_w + 4, text_y + 4),
         (0, 0, 0),
         -1
     )
 
-    # Text
+    # Draw text
     cv2.putText(
         img,
         shape,
-        (x + 3, text_y - 3),
+        (text_x, text_y),
         font,
         font_scale,
         (0, 255, 255),
