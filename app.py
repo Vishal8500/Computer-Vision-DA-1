@@ -193,43 +193,39 @@ if uploaded_file:
             # Draw contour
             cv2.drawContours(img, [cnt], -1, (0, 255, 0), 5)
 
-            # Bounding box
-            x, y, w, h = cv2.boundingRect(cnt)
+    # Bounding box
+    x, y, w, h = cv2.boundingRect(cnt)
 
-            # -------- SAFE LABEL PLACEMENT --------
-            label = shape
-            font = cv2.FONT_HERSHEY_SIMPLEX
-            font_scale = 1.2
-            thickness = 3
+    # Auto scale font based on object size
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    font_scale = max(0.4, min(w, h) / 150)   # dynamic scaling
+    thickness = max(1, int(font_scale * 2))
 
-            (text_w, text_h), _ = cv2.getTextSize(label, font, font_scale, thickness)
+    (label_w, label_h), _ = cv2.getTextSize(shape, font, font_scale, thickness)
 
-            text_x = x
-            text_y = y - 15
+    # Safe placement
+    text_y = y - 10 if y - 10 > label_h else y + label_h + 10
 
-            # If text goes outside top boundary, move it inside/below
-            if text_y - text_h < 0:
-                text_y = y + text_h + 15
+    # Background box
+    cv2.rectangle(
+        img,
+        (x, text_y - label_h - 6),
+        (x + label_w + 6, text_y),
+        (0, 0, 0),
+        -1
+    )
 
-            # Background rectangle
-            cv2.rectangle(
-                img,
-                (text_x, text_y - text_h - 10),
-                (text_x + text_w + 10, text_y),
-                (0, 0, 0),
-                -1
-            )
+    # Text
+    cv2.putText(
+        img,
+        shape,
+        (x + 3, text_y - 3),
+        font,
+        font_scale,
+        (0, 255, 255),
+        thickness
+    )
 
-            # Text
-            cv2.putText(
-                img,
-                label,
-                (text_x + 5, text_y - 5),
-                font,
-                font_scale,
-                (0, 255, 255),
-                thickness
-            )
 
     # -------------------------------
     # Detected Image
