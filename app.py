@@ -130,8 +130,9 @@ uploaded_file = st.file_uploader(
 
 if uploaded_file:
 
-    image = Image.open(uploaded_file)
+    image = Image.open(uploaded_file).convert("RGB")
     img = np.array(image)
+
     original = img.copy()
     img_h, img_w = img.shape[:2]
 
