@@ -151,12 +151,16 @@ if uploaded_file:
     # Preprocessing (ROBUST VERSION)
     # -------------------------------
 
-    # If image has 3 channels → convert to grayscale
-    if len(img.shape) == 3:
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    else:
+    # Handle all image types safely
+    if len(img.shape) == 2:
         # Already grayscale
-        gray = img.copy()
+        gray = img
+    elif img.shape[2] == 3:
+        # RGB image
+        gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+    elif img.shape[2] == 4:
+        # RGBA image
+        gray = cv2.cvtColor(img, cv2.COLOR_RGBA2GRAY)
 
 
 
