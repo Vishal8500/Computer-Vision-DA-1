@@ -8,7 +8,7 @@ from PIL import Image
 # Page Configuration
 # ---------------------------------
 st.set_page_config(
-    page_title="Shape & Contour Analyzer",
+    page_title="Shape & Contour Analyzer - 22MIA1014 (M Vishal)",
     layout="wide",
     initial_sidebar_state="expanded"
 )
