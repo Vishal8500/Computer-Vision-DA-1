@@ -107,17 +107,58 @@ st.sidebar.info(
 # ---------------------------------
 def detect_shape(contour):
     peri = cv2.arcLength(contour, True)
-    approx = cv2.approxPolyDP(contour, 0.04 * peri, True)
+    approx = cv2.approxPolyDP(contour, 0.02 * peri, True)
     sides = len(approx)
 
+    area = cv2.contourArea(contour)
+    if area == 0:
+        return "Unknown"
+
+    # Circularity (helps distinguish circle vs polygon)
+    circularity = (4 * np.pi * area) / (peri * peri + 1e-6)
+
+    # --- Polygon-based detection ---
     if sides == 3:
         return "Triangle"
+
     elif sides == 4:
-        return "Rectangle"
-    elif sides > 4:
-        return "Circle"
+        return "Quadrilateral"
+
+    elif sides == 5:
+        return "Pentagon"
+
+    elif sides == 6:
+        return "Hexagon"
+
+    elif sides == 7:
+        return "Heptagon"
+
+    elif sides == 8:
+        return "Octagon"
+
+    elif sides == 9:
+        return "Nonagon"
+
+    elif sides == 10:
+        return "Decagon"
+
+    # --- Curve-based detection ---
     else:
-        return "Unknown"
+        # High circularity → Circle
+        if circularity > 0.80:
+            return "Circle"
+
+        # Medium circularity → Oval
+        elif 0.55 < circularity <= 0.80:
+            return "Oval"
+
+        # Low circularity but curved → Semi-circle / irregular curve
+        elif 0.35 < circularity <= 0.55:
+            return "Semi-circle"
+
+        else:
+            return "Irregular"
+
 
 # ---------------------------------
 # Upload Section
