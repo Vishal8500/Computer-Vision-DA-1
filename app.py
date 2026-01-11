@@ -147,34 +147,34 @@ if uploaded_file:
         st.markdown('</div>', unsafe_allow_html=True)
 
 
-    # -------------------------------
-    # Preprocessing (ROBUST VERSION)
-    # -------------------------------
-
-    # Handle all image types safely
     if len(img.shape) == 2:
-        # Already grayscale
         gray = img
     elif img.shape[2] == 3:
-        # RGB image
         gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
-    elif img.shape[2] == 4:
-        # RGBA image
+    else:
         gray = cv2.cvtColor(img, cv2.COLOR_RGBA2GRAY)
 
-
-
     blur = cv2.GaussianBlur(gray, (5, 5), 0)
-    edges = cv2.Canny(blur, canny_low, canny_high)
+
+    # Adaptive threshold (works better on white/light images)
+    thresh = cv2.adaptiveThreshold(
+        blur,
+        255,
+        cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+        cv2.THRESH_BINARY_INV,
+        11,
+        2
+    )
 
     contours, _ = cv2.findContours(
-        edges,
+        thresh,
         cv2.RETR_EXTERNAL,
         cv2.CHAIN_APPROX_SIMPLE
     )
 
     results = []
     valid_contours = []
+
 
     # -------------------------------
     # Analyze Contours
