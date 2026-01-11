@@ -146,10 +146,20 @@ if uploaded_file:
         st.image(original, width=420)
         st.markdown('</div>', unsafe_allow_html=True)
 
+
     # -------------------------------
-    # Preprocessing
+    # Preprocessing (ROBUST VERSION)
     # -------------------------------
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    # If image has 3 channels → convert to grayscale
+    if len(img.shape) == 3:
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    else:
+        # Already grayscale
+        gray = img.copy()
+
+
+
     blur = cv2.GaussianBlur(gray, (5, 5), 0)
     edges = cv2.Canny(blur, canny_low, canny_high)
 
